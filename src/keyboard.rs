@@ -416,6 +416,25 @@ impl convert::TryFrom<char> for Key {
     type Error = Error;
 
     fn try_from(c: char) -> Result<Self, Self::Error> {
+        if [
+            '~', '!', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '{', '}', '|', ':', '\"',
+            '<', '>', '?',
+        ]
+        .contains(&c)
+        {
+            return Err(Error::new(
+                ErrorKind::OSAgnostic,
+                ErrorCode::NO_EQUIVALENT_KEY,
+                format!(
+                    "No equivalent key exists for the character \"{}\".
+                    It seems like you are using a character generated 
+                    with the help of a modifier key such as Shift or CapsLook. 
+                    These characters are generally not supported with the exception of upper-case letters.",
+                    c
+                ),
+            ));
+        }
+
         Ok(match c {
             '0' => Key::Zero,
             '1' => Key::One,
@@ -428,7 +447,7 @@ impl convert::TryFrom<char> for Key {
             '8' => Key::Eight,
             '9' => Key::Nine,
 
-            'a' | 'A' =>Key::A,
+            'a' | 'A' => Key::A,
             'b' | 'B' => Key::B,
             'c' | 'C' => Key::C,
             'd' | 'D' => Key::D,
@@ -460,7 +479,7 @@ impl convert::TryFrom<char> for Key {
             '=' => Key::Equals,
             '[' => Key::LeftBracket,
             ']' => Key::RightBracket,
-            '\\' =>Key::BackwardsSlash,
+            '\\' => Key::BackwardsSlash,
             ';' => Key::Semicolon,
             '\'' => Key::Quote,
             ',' => Key::Comma,
@@ -473,8 +492,8 @@ impl convert::TryFrom<char> for Key {
                 return Err(Error::new(
                     ErrorKind::OSAgnostic,
                     ErrorCode::NO_EQUIVALENT_KEY,
-                    format!("No equivalent key exist for character \"{}\".", c),
-                ))
+                    format!("No equivalent key exists for the character \"{}\".", c),
+                ));
             }
         })
     }
