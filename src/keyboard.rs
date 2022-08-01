@@ -28,6 +28,14 @@ cfg_if! {
     }
 }
 
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        const MAX_MODIFIER_NUM: usize = 5;
+    } else {
+        const MAX_MODIFIER_NUM: usize = 6;
+    }
+}
+
 // <==============================> KEY <=============================>
 
 #[derive(Serialize, Display, Defaults)]
@@ -528,8 +536,6 @@ impl convert::From<Key> for i32 {
 
 // <===========================> MODIFIER <===========================>
 
-const MAX_MODIFIER_LEN: usize = 5;
-
 #[derive(Copy, Clone, Debug, Display)]
 pub enum Modifier {
     #[cfg(any(target_os = "linux", target_os = "windows"))]
@@ -579,7 +585,7 @@ impl PartialEq for Modifier {
 pub fn register_shortcut(id: u16, modifiers: &[Modifier], key: Key) -> Result<(), Error> {
     // TODO: Add key check.
 
-    let modifiers_len = match modifiers.len() {
+    let modifiers_num = match modifiers.len() {
         len @ 0 => {
             return Err(Error::new(
                 ErrorKind::OSAgnostic,
@@ -587,20 +593,20 @@ pub fn register_shortcut(id: u16, modifiers: &[Modifier], key: Key) -> Result<()
                 "Modifiers list cannot be empty.",
             ))
         }
-        len @ MAX_MODIFIER_LEN..=usize::MAX => {
+        len @ MAX_MODIFIER_NUM..=usize::MAX => {
             return Err(Error::new(
                 ErrorKind::OSAgnostic,
                 ErrorCode::INVALID_MODIFIRES_LIST,
                 format!(
                     "Modifiers list cannot contain more than {} modifiers.",
-                    MAX_MODIFIER_LEN
+                    MAX_MODIFIER_NUM
                 ),
             ))
         }
-        len => len,
+        num => num,
     };
 
-    if (1..modifiers_len).any(|i| modifiers[i..].contains(&modifiers[i - 1])) {
+    if (1..modifiers_num).any(|i| modifiers[i..].contains(&modifiers[i - 1])) {
         return Err(Error::new(
             ErrorKind::OSAgnostic,
             ErrorCode::INVALID_MODIFIRES_LIST,
