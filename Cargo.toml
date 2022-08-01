@@ -1,0 +1,21 @@
+[package]
+name = "peripherals_rs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = {version = "1.0.140", features = ["derive"] }
+serde_json = "1.0.82"
+parse-display-derive = "0.5.5"
+defaults = "0.2.0"
+cfg-if = "1.0.0"
+
+[dependencies.windows]
+version = "0.39.0"
+features = [
+    "Win32_Foundation",
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_UI_WindowsAndMessaging",
+]
