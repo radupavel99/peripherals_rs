@@ -1,10 +1,10 @@
 use std::{convert, fmt, mem};
 
 use cfg_if::cfg_if;
+use defaults::Defaults;
 use parse_display_derive::Display;
 use serde::Serialize;
 use serde_json::json;
-use windows::Win32::UI::Input::KeyboardAndMouse;
 
 use super::peripherals::{Error, ErrorCode, ErrorKind};
 
@@ -30,13 +30,14 @@ cfg_if! {
 
 // <==============================> KEY <=============================>
 
-#[derive(Serialize, Display, Default)]
+#[derive(Serialize, Display, Defaults)]
+#[def = "Up"]
 pub enum KeyState {
-    #[default]
     Up,
     Down,
 }
 
+// TODO: Add keys.
 #[derive(Copy, Clone, Debug, Display)]
 pub enum Key {
     #[cfg(target_os = "windows")]
@@ -83,7 +84,7 @@ impl Key {
                         return KeyState::Down;
                     }
                 } else if #[cfg(target_os = "linux")] {
-                    todo!("Implement Key.state() for LinuxOS.")
+                    todo!("// TODO: Implement Key.state() for LinuxOS.")
                 } else {
                     if KeyboardAndMouse::GetKeyState(i32::from(*self)) < 0 {
                         return KeyState::Down;
@@ -177,7 +178,7 @@ impl convert::From<Modifier> for u32 {
             } else if #[cfg(target_os = "linux")] {
                 todo!("// TODO: Implement u32::from(Modifier) for MacOS.")
             } else {
-                match key {
+                match modifier {
                     Modifier::Alt => KeyboardAndMouse::MOD_ALT,
                     Modifier::Control => KeyboardAndMouse::MOD_CONTROL,
                     Modifier::NoRepeat => KeyboardAndMouse::MOD_NOREPEAT,
@@ -245,8 +246,9 @@ pub fn register_hotkey(id: i32, modifiers: &[Modifier], key: Key) -> Result<(), 
                             KeyboardAndMouse::HOT_KEY_MODIFIERS(modifiers),
                             key.into()
                         ).as_bool() {
-                            let code = Code(Foundation::GetLastError().to_hresult());
-                            let description = error_code.message().to_string();
+                            let error = Foundation::GetLastError().to_hresult();
+                            let code = ErrorCode::from(error.0);
+                            let description = error.message().to_string();
 
                             return Err(Error::new(ErrorKind::OSSpecific, code, description));
                         }
@@ -266,8 +268,9 @@ pub fn unregister_hotkey(id: i32) -> Result<(), Error> {
                 todo!("Implement unregister_hotkey() for LinuxOS")
             } else {
                 if KeyboardAndMouse::UnregisterHotKey(Foundation::HWND(0), id).as_bool() {
-                    let code = Code(Foundation::GetLastError().to_hresult());
-                    let description = error_code.message().to_string();
+                    let error = Foundation::GetLastError().to_hresult();
+                    let code = ErrorCode::from(error.0);
+                    let description = error.message().to_string();
 
                     return Err(Error::new(ErrorKind::OSSpecific, code, description));
                 }

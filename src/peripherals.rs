@@ -11,9 +11,9 @@ cfg_if! {
     }
 }
 
-#[derive(Debug, Display, Default)]
+#[derive(Debug, Display, Defaults)]
+#[def = "Unknown"]
 pub enum ErrorKind {
-    #[default]
     Unknown,
     OSSpecific,
     OSAgnostic,
@@ -37,6 +37,12 @@ impl ErrorCode {
     pub const UNKNOWN: ErrorCode = ErrorCode(1);
     pub const NO_EQUIVALENT_KEY: ErrorCode = ErrorCode(2);
     pub const INVALID_MODIFIRES_LIST: ErrorCode = ErrorCode(3);
+}
+
+impl From<i32> for ErrorCode {
+    fn from(error_code: i32) -> Self {
+        ErrorCode(error_code)
+    }
 }
 
 impl Error {
