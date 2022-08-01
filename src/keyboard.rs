@@ -426,10 +426,7 @@ impl convert::TryFrom<char> for Key {
                 ErrorKind::OSAgnostic,
                 ErrorCode::NO_EQUIVALENT_KEY,
                 format!(
-                    "No equivalent key exists for the character \"{}\".
-                    It seems like you are using a character generated 
-                    with the help of a modifier key such as Shift or CapsLook. 
-                    These characters are generally not supported with the exception of upper-case letters.",
+                    "No equivalent key exists for the character \"{}\". It seems like you are using a character generated with the help of a modifier key such as Shift or CapsLook. These characters are generally not supported with the exception of upper-case letters.",
                     c
                 ),
             ));

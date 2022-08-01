@@ -4,7 +4,10 @@ mod keyboard;
 mod peripherals;
 
 fn main() {
-    loop {
-        println!("{}", keyboard::Key::try_from('a').unwrap().to_json())
+    match keyboard::Key::try_from('A') {
+        Ok(key) => loop {
+            println!("{}", key.to_json())
+        },
+        Err(err) => println!("{}", err.to_json()),
     }
 }
