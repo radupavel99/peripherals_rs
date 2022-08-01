@@ -6,8 +6,8 @@ mod peripherals;
 fn main() {
     match keyboard::Key::try_from('A') {
         Ok(key) => loop {
-            println!("{}", key.to_json())
+            println!("{}", key.json())
         },
-        Err(err) => println!("{}", err.to_json()),
+        Err(err) => println!("{}", err.json()),
     }
 }

@@ -55,7 +55,7 @@ impl Error {
         }
     }
 
-    pub fn to_json(&self) -> String {
+    pub fn json(&self) -> String {
         json!({
             "kind": self.kind.to_string(),
             "code": self.code.0,

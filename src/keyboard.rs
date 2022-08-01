@@ -1,4 +1,4 @@
-use std::{convert, fmt, mem};
+use std::{convert, fmt};
 
 use cfg_if::cfg_if;
 use defaults::Defaults;
@@ -383,7 +383,7 @@ Backspace,
 */
 
 impl Key {
-    pub fn to_json(&self) -> String {
+    pub fn json(&self) -> String {
         json!({
             "name": self.to_string(),
             "state": (*self).state()
@@ -669,11 +669,11 @@ pub fn shortcut_state(id: u16) -> Result<KeyState, Error> {
             } else if #[cfg(target_os = "linux")] {
                 todo!("Implement shortcut_state() for LinuxOS")
             } else {
-                let mut msg = mem::MaybeUninit::uninit().assume_init();
+                let mut message = WindowsAndMessaging::MSG::default();
 
-                if WindowsAndMessaging::GetMessageW(&mut msg,
+                if WindowsAndMessaging::GetMessageW(&mut message,
                     Foundation::HWND(0), 0, 0
-                ).as_bool() && msg.wParam.0 == usize::from(id) {
+                ).as_bool() && message.wParam.0 == usize::from(id) {
                     return Ok(KeyState::Down);
                 }
             }
