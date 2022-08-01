@@ -1,7 +1,7 @@
 #![allow(dead_code, unused_imports, unused_variables, unreachable_code)]
 
-mod peripherals;
 mod keyboard;
+mod peripherals;
 
 fn main() {
     loop {
