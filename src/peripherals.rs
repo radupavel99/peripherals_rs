@@ -38,6 +38,7 @@ impl ErrorCode {
     pub const NO_EQUIVALENT_KEY: ErrorCode = ErrorCode(2);
     pub const INVALID_SHORTCUT_ID: ErrorCode = ErrorCode(3);
     pub const INVALID_MODIFIRES_LIST: ErrorCode = ErrorCode(4);
+    pub const INVALID_KEY: ErrorCode = ErrorCode(5);
 }
 
 impl From<i32> for ErrorCode {

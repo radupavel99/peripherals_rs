@@ -513,8 +513,60 @@ impl convert::From<Key> for u16 {
                 todo!("// TODO: Implement u16::from(Key) for MacOS.")
             } else {
                 match key {
+                    Key::Zero => KeyboardAndMouse::VK_0,
+                    Key::One => KeyboardAndMouse::VK_1,
+                    Key::Two => KeyboardAndMouse::VK_2,
+                    Key::Three => KeyboardAndMouse::VK_3,
+                    Key::Four => KeyboardAndMouse::VK_4,
+                    Key::Five => KeyboardAndMouse::VK_5,
+                    Key::Six => KeyboardAndMouse::VK_6,
+                    Key::Seven => KeyboardAndMouse::VK_7,
+                    Key::Eight => KeyboardAndMouse::VK_8,
+                    Key::Nine => KeyboardAndMouse::VK_9,
+
                     Key::A => KeyboardAndMouse::VK_A,
-                    _ => todo!("// TODO: Implement u16::from(Key) for WindowsOS.")
+                    Key::B => KeyboardAndMouse::VK_B,
+                    Key::C => KeyboardAndMouse::VK_C,
+                    Key::D => KeyboardAndMouse::VK_D,
+                    Key::E => KeyboardAndMouse::VK_E,
+                    Key::F => KeyboardAndMouse::VK_F,
+                    Key::G => KeyboardAndMouse::VK_G,
+                    Key::H => KeyboardAndMouse::VK_H,
+                    Key::I => KeyboardAndMouse::VK_I,
+                    Key::J => KeyboardAndMouse::VK_J,
+                    Key::K => KeyboardAndMouse::VK_K,
+                    Key::L => KeyboardAndMouse::VK_L,
+                    Key::M => KeyboardAndMouse::VK_M,
+                    Key::N => KeyboardAndMouse::VK_N,
+                    Key::O => KeyboardAndMouse::VK_O,
+                    Key::P => KeyboardAndMouse::VK_P,
+                    Key::Q => KeyboardAndMouse::VK_Q,
+                    Key::R => KeyboardAndMouse::VK_R,
+                    Key::S => KeyboardAndMouse::VK_S,
+                    Key::T => KeyboardAndMouse::VK_T,
+                    Key::U => KeyboardAndMouse::VK_U,
+                    Key::V => KeyboardAndMouse::VK_V,
+                    Key::W => KeyboardAndMouse::VK_W,
+                    Key::X => KeyboardAndMouse::VK_X,
+                    Key::Y => KeyboardAndMouse::VK_Y,
+                    Key::Z => KeyboardAndMouse::VK_Z,
+
+                    // Key::Grave => KeyboardAndMouse::VK_,
+                    Key::Minus => KeyboardAndMouse::VK_OEM_MINUS,
+                    // Key::Equals => KeyboardAndMouse::VK_,
+                    // Key::LeftBracket => KeyboardAndMouse::VK_,
+                    // Key::RightBracket => KeyboardAndMouse::VK_,
+                    // Key::BackwardsSlash => KeyboardAndMouse::VK_,
+                    // Key::Semicolon => KeyboardAndMouse::VK_,
+                    // Key::Quote => KeyboardAndMouse::VK_,
+                    Key::Comma => KeyboardAndMouse::VK_OEM_COMMA,
+                    Key::Period => KeyboardAndMouse::VK_OEM_PERIOD,
+                    // Key::Slash => KeyboardAndMouse::VK_,
+   
+
+                    Key::Space => KeyboardAndMouse::VK_SPACE,
+
+                    _ => todo!("// TODO: Finish u16::from(Key) for WindowsOS."),
                 }.0
             }
         }
@@ -583,8 +635,6 @@ impl PartialEq for Modifier {
 // <==================================================================>
 
 pub fn register_shortcut(id: u16, modifiers: &[Modifier], key: Key) -> Result<(), Error> {
-    // TODO: Add key check.
-
     let modifiers_num = match modifiers.len() {
         len @ 0 => {
             return Err(Error::new(
