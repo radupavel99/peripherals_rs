@@ -36,7 +36,8 @@ pub struct Error {
 impl ErrorCode {
     pub const UNKNOWN: ErrorCode = ErrorCode(1);
     pub const NO_EQUIVALENT_KEY: ErrorCode = ErrorCode(2);
-    pub const INVALID_MODIFIRES_LIST: ErrorCode = ErrorCode(3);
+    pub const INVALID_SHORTCUT_ID: ErrorCode = ErrorCode(3);
+    pub const INVALID_MODIFIRES_LIST: ErrorCode = ErrorCode(4);
 }
 
 impl From<i32> for ErrorCode {

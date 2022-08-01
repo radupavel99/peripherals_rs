@@ -198,7 +198,7 @@ impl PartialEq for Modifier {
 
 // <==================================================================>
 
-pub fn register_hotkey(id: i32, modifiers: &[Modifier], key: Key) -> Result<(), Error> {
+pub fn register_shortcut(id: u16, modifiers: &[Modifier], key: Key) -> Result<(), Error> {
     let modifiers_len = match modifiers.len() {
         len @ 0 => {
             return Err(Error::new(
@@ -228,30 +228,30 @@ pub fn register_hotkey(id: i32, modifiers: &[Modifier], key: Key) -> Result<(), 
         ));
     }
 
-    let modifiers = modifiers.iter().fold(0, |mut acc, modifire| {
-        acc |= u32::from(*modifire);
-        acc
-    });
-
     unsafe {
         cfg_if! {
                 if #[cfg(target_os = "macos")] {
-                    todo!("Implement register_hotkey() for MacOS.")
+                    todo!("Implement register_shortcut() for MacOS.")
                 } else if #[cfg(target_os = "linux")] {
-                    todo!("Implement register_hotkey() for LinuxOS")
+                    todo!("Implement register_shortcut() for LinuxOS")
                 } else {
-                        if !KeyboardAndMouse::RegisterHotKey(
-                            Foundation::HWND(0),
-                            id,
-                            KeyboardAndMouse::HOT_KEY_MODIFIERS(modifiers),
-                            key.into()
-                        ).as_bool() {
-                            let error = Foundation::GetLastError().to_hresult();
-                            let code = ErrorCode::from(error.0);
-                            let description = error.message().to_string();
+                    let modifiers = modifiers.iter().fold(0, |mut acc, modifire| {
+                        acc |= u32::from(*modifire);
+                        acc
+                    });
 
-                            return Err(Error::new(ErrorKind::OSSpecific, code, description));
-                        }
+                    if !KeyboardAndMouse::RegisterHotKey(
+                        Foundation::HWND(0),
+                        i32::from(id),
+                        KeyboardAndMouse::HOT_KEY_MODIFIERS(modifiers),
+                        key.into()
+                    ).as_bool() {
+                        let error = Foundation::GetLastError().to_hresult();
+                        let code = ErrorCode::from(error.0);
+                        let description = error.message().to_string();
+
+                        return Err(Error::new(ErrorKind::OSSpecific, code, description));
+                    }
                  }
         }
     }
@@ -259,15 +259,15 @@ pub fn register_hotkey(id: i32, modifiers: &[Modifier], key: Key) -> Result<(), 
     Ok(())
 }
 
-pub fn unregister_hotkey(id: i32) -> Result<(), Error> {
+pub fn unregister_shortcut(id: u16) -> Result<(), Error> {
     unsafe {
         cfg_if! {
             if #[cfg(target_os = "macos")] {
-                todo!("Implement unregister_hotkey() for MacOS.")
+                todo!("Implement unregister_shortcut() for MacOS.")
             } else if #[cfg(target_os = "linux")] {
-                todo!("Implement unregister_hotkey() for LinuxOS")
+                todo!("Implement unregister_shortcut() for LinuxOS")
             } else {
-                if KeyboardAndMouse::UnregisterHotKey(Foundation::HWND(0), id).as_bool() {
+                if KeyboardAndMouse::UnregisterHotKey(Foundation::HWND(0), i32::from(id)).as_bool() {
                     let error = Foundation::GetLastError().to_hresult();
                     let code = ErrorCode::from(error.0);
                     let description = error.message().to_string();
@@ -279,4 +279,26 @@ pub fn unregister_hotkey(id: i32) -> Result<(), Error> {
     }
 
     Ok(())
+}
+
+pub fn shortcut_state(id: u16) -> Result<KeyState, Error> {
+    unsafe {
+        cfg_if! {
+            if #[cfg(target_os = "macos")] {
+                todo!("Implement shortcut_state() for MacOS.")
+            } else if #[cfg(target_os = "linux")] {
+                todo!("Implement shortcut_state() for LinuxOS")
+            } else {
+                let mut msg = mem::MaybeUninit::uninit().assume_init();
+
+                if WindowsAndMessaging::GetMessageW(&mut msg,
+                    Foundation::HWND(0), 0, 0
+                ).as_bool() && msg.wParam.0 == usize::from(id) {
+                    return Ok(KeyState::Down);
+                }
+            }
+        }
+    }
+
+    Ok(KeyState::default())
 }
